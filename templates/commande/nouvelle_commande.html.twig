@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mx-auto p-6">
+
+    <div id="alerts"></div>
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold text-gray-700 mb-4">Informations du Client</h2>
+        <form method="GET" action="{{ path('nouvelle_commande') }}">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label class="block font-medium text-gray-700">Téléphone</label>
+                    <input type="text" name="telephone" id="telephone" placeholder="Entrez le téléphone" class="border border-gray-300 rounded px-4 py-2 w-full" oninput="fetchClientInfo()">
+                </div>
+                <div>
+                    <label class="block font-medium text-gray-700">Nom</label>
+                    <input type="text" id="nom" readonly class="border border-gray-300 rounded px-4 py-2 w-full bg-gray-100">
+                </div>
+                <div>
+                    <label class="block font-medium text-gray-700">Prénom</label>
+                    <input type="text" id="prenom" readonly class="border border-gray-300 rounded px-4 py-2 w-full bg-gray-100">
+                </div>
+                <div>
+                    <label class="block font-medium text-gray-700">Adresse</label>
+                    <input type="text" id="adresse" readonly class="border border-gray-300 rounded px-4 py-2 w-full bg-gray-100">
+                </div>
+            </div>
+        </form>
+
+        {% if client %}
+            <input type="hidden" id="client_id" value="{{ client.id }}" />
+        {% endif %}
+
+        <h2 class="text-xl font-bold text-gray-700 mb-4">Articles Disponibles</h2>
+        <div class="mb-4">
+            <input type="text" id="searchArticle" placeholder="Rechercher un article..." class="border border-gray-300 rounded px-4 py-2 w-full mb-4">
+            <table class="w-full border border-gray-300 rounded-md">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-4 py-2">Sélectionner</th>
+                        <th class="px-4 py-2">Libellé</th>
+                        <th class="px-4 py-2">Prix</th>
+                        <th class="px-4 py-2">Qte Stock</th>
+                    </tr>
+                </thead>
+                <tbody id="articlesList">
+                    {% for article in articles %}
+                        <tr>
+                            <td class="px-4 py-2 text-center">
+                                <input type="checkbox" class="articleCheckbox" data-id="{{ article.id }}" data-libelle="{{ article.libelle }}" data-prix="{{ article.prix }}" data-stock="{{ article.stock }}"/>
+                            </td>
+                            <td class="px-4 py-2">{{ article.libelle }}</td>
+                            <td class="px-4 py-2">{{ article.prix }}</td>
+                            <td class="px-4 py-2">{{ article.stock }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="text-xl font-bold text-gray-700 mt-6 mb-4">Articles Sélectionnés</h2>
+        <table class="w-full border border-gray-300 rounded-md">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-4 py-2 text-left">Article</th>
+                    <th class="px-4 py-2 text-left">Prix</th>
+                    <th class="px-4 py-2 text-left">Quantité</th>
+                    <th class="px-4 py-2 text-left">Montant Total</th>
+                    <th class="px-4 py-2"></th>
+                </tr>
+            </thead>
+            <tbody id="selectedArticles"></tbody>
+        </table>
+
+        <div class="mt-4 text-right">
+            <h3 class="text-lg font-bold text-gray-700">Montant Total : <span id="totalAmount">0</span></h3>
+        </div>
+
+        <button id="saveCommandeBtn" class="w-full bg-gray-400 text-white py-2 rounded-md mt-6 hover:bg-gray-500">
+            Enregistrer la Commande
+        </button>
+    </div>
+</div>
+    <script src="{{ asset('js/script.js') }}"></script>
+
+{% endblock %}
